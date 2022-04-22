@@ -5,6 +5,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// the module that takes care of scheduling
+const schedule = require('node-schedule');
+
 // requiring the mongodb model 
 const bdBoi = require('../dbConnection/dbConnect.js')
 
@@ -20,6 +23,14 @@ app.get('/me', (req, res) => {
         .create({ body: 'Hello World', from: '+12406982773', to: '+919535616743' })
         .then(message => console.log(message.sid));
     res.send('success');
+});
+
+// method of the scheduling module everyday
+const job = schedule.scheduleJob('30 0 * * *', () => {
+    client.messages
+        .create({ body: 'Good Morning Tarun', from: '+12406982773', to: '+919535616743' })
+        .then(message => console.log(message.sid));
+    console.log('Message Sent');
 });
 
 // to get all birthdays
