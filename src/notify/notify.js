@@ -34,7 +34,8 @@ const job = schedule.scheduleJob('00 13 * * *', () => {
 });
 
 // just for testing
-bdBoi.find().exec((err, docs) => {
+var today = new Date().toLocaleDateString();
+bdBoi.find({ "birthDate": today }).exec((err, docs) => {
     if (err) {
         res.send(err);
         return
@@ -47,10 +48,15 @@ bdBoi.find().exec((err, docs) => {
         for (i of docs) {
             if (i.birthDate == today) {
                 console.log("BirthDayyyy")
-                for (people of docs) {
-                    console.log(people.phoneNumber);
-                    sendMsg(people.name, i.name, people.phoneNumber);
-                }
+                var groupName = i.group
+
+                bdBoi.find({ "group": groupName }).exec(async (err, peeps) => {
+                    for (people of peeps) {
+                        console.log(people.phoneNumber);
+                        // comment the next line to not waste credits
+                        // await sendMsg(people.name, i.name, people.phoneNumber);
+                    }
+                });
             }
         }
     }
