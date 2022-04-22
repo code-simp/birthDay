@@ -9,8 +9,8 @@ mongoose.connect(process.env.MONGOURL, { useNewUrlParser: true }, () => {
 
 const bdBoi = mongoose.Schema({
     name: String,
-    birthDate: Date,
-    phoneNumber: Number
+    birthDate: String,
+    phoneNumber: String
 });
 
 module.exports = mongoose.model('bdBois', bdBoi);
@@ -19,8 +19,8 @@ module.exports = mongoose.model('bdBois', bdBoi);
 
 // const newuser = new bdModel({
 //     name: "tarun",
-//     birthDate: 22 - 10 - 2001,
-//     phoneNumber: 9535616743
+//     birthDate: "22/04/2022",
+//     phoneNumber: "+919535616743"
 // });
 
 // newuser.save((err) => {

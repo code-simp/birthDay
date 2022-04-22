@@ -26,13 +26,47 @@ app.get('/me', (req, res) => {
 });
 
 // method of the scheduling module everyday
-const job = schedule.scheduleJob('30 0 * * *', () => {
+const job = schedule.scheduleJob('00 13 * * *', () => {
     client.messages
         .create({ body: 'Good Morning Tarun', from: '+12406982773', to: '+919535616743' })
         .then(message => console.log(message.sid));
     console.log('Message Sent');
 });
 
+// just for testing
+bdBoi.find().exec((err, docs) => {
+    if (err) {
+        res.send(err);
+        return
+    }
+    else {
+        // getting today's date
+        var today = new Date().toLocaleDateString();
+
+        // looping through and finding if someone has a birthday today
+        for (i of docs) {
+            if (i.birthDate == today) {
+                console.log("BirthDayyyy")
+                for (people of docs) {
+                    console.log(people.phoneNumber);
+                    sendMsg(people.name, i.name, people.phoneNumber);
+                }
+            }
+        }
+    }
+});
+
+// function that sends the messages to people
+const sendMsg = async (user, bBoi, toPhone) => {
+    await client.messages
+        .create({ body: `Hey ${user}.\nToday's ${bBoi}'s birthdayyy, Happy Birthday ya filthy F$#tard`, from: '+12406982773', to: toPhone })
+        .then(message => {
+            console.log(message.status);
+            console.log(message.error_code);
+            console.log(message.error_message);
+        });
+    console.log("message sent")
+};
 // to get all birthdays
 app.get('/getAll', (req, res) => {
     bdBoi.find().exec((err, docs) => {
