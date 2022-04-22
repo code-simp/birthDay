@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 // Using Node.js `require()` to require mongoose
 const mongoose = require('mongoose');
 
@@ -13,3 +15,16 @@ const bdBoi = mongoose.Schema({
 
 module.exports = mongoose.model('bdBois', bdBoi);
 
+// const bdModel = mongoose.model('bdBois', bdBoi)
+
+// const newuser = new bdModel({
+//     name: "tarun",
+//     birthDate: 22 - 10 - 2001,
+//     phoneNumber: 9535616743
+// });
+
+// newuser.save((err) => {
+//     if (err) {
+//         console.log(err);
+//     }
+// });
