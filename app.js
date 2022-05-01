@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 5050;
-const connectDB = require('../birthDay/src/dbConnection/dbConnect');
+const connectDB = require('./src/dbConnection/dbConnect');
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
