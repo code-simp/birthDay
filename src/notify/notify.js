@@ -1,66 +1,50 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const app = express();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-// the module that takes care of scheduling
+const app = express();                          
 const schedule = require('node-schedule');
-
-// requiring the mongodb model 
-const bdBoi = require('../dbConnection/dbConnect.js')
-
-// lets send some messages
+const bdBoi = require('../Models/bdBoi');               // Schema import
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
-// method to test messaging
-// WORKS = YES
-app.get('/me', (req, res) => {
-    client.messages
-        .create({ body: 'Hello World', from: '+12406982773', to: '+919535616743' })
-        .then(message => console.log(message.sid));
-    res.send('success');
-});
+
+var today = new Date().toLocaleDateString();
+
 
 // method of the scheduling module everyday
-const job = schedule.scheduleJob('00 13 * * *', () => {
-    client.messages
-        .create({ body: 'Good Morning Tarun', from: '+12406982773', to: '+919535616743' })
-        .then(message => console.log(message.sid));
-    console.log('Message Sent');
-});
-
-// just for testing
-var today = new Date().toLocaleDateString();
-bdBoi.find({ "birthDate": today }).exec((err, docs) => {
-    if (err) {
-        res.send(err);
-        return
-    }
-    else {
-        // getting today's date
-        var today = new Date().toLocaleDateString();
-
-        // looping through and finding if someone has a birthday today
-        for (i of docs) {
-            if (i.birthDate == today) {
-                console.log("BirthDayyyy")
-                var groupName = i.group
-
-                bdBoi.find({ "group": groupName }).exec(async (err, peeps) => {
-                    for (people of peeps) {
-                        console.log(people.phoneNumber);
-                        // comment the next line to not waste credits
-                        // await sendMsg(people.name, i.name, people.phoneNumber);
-                    }
-                });
-            }
+const job = schedule.scheduleJob({hour: 0, minute: 5, tz: "IST"}, async () => {
+    bdBoi.find().exec((err, docs) => {
+        if (err) {
+            res.send(err);
+            return
         }
-    }
+        else {
+            console.log(docs);
+            // getting today's date
+
+            var today = new Date().toISOString();
+
+            // looping through and finding if someone has a birthday today
+
+            for (i of docs) {
+                if (i.birthDate.slice(5, 10) == today.slice(5, 10)) {
+                    console.log("BirthDayyyy")
+                    var groupName = i.group
+    
+                    bdBoi.find({ "group": groupName }).exec(async (err, peeps) => {
+                        for (people of peeps) {
+                            console.log(people.phoneNumber);
+                            // comment the next line to not waste credits
+                            await sendMsg(people.name, i.name, people.phoneNumber);
+                        }
+                    });
+                }
+            }
+            
+        }
+    });
 });
+
 
 // function that sends the messages to people
 const sendMsg = async (user, bBoi, toPhone) => {

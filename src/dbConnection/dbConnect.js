@@ -3,30 +3,22 @@ require('dotenv').config()
 // Using Node.js `require()` to require mongoose
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGOURL, { useNewUrlParser: true }, () => {
-    console.log("mongoose connected");
-});
+const connectDB = async () => {
+    try {
+        await mongoose.connect(
+            process.env.MONGOURL,
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            }
+        );
 
-const bdBoi = mongoose.Schema({
-    name: String,
-    birthDate: String,
-    phoneNumber: String,
-    group: String
-});
+        console.log('MongoDB is Connected...');
+    } catch (err) {
+        console.error(err.message);
+        process.exit(1);
+    }
+};
 
-module.exports = mongoose.model('bdBois', bdBoi);
 
-// const bdModel = mongoose.model('bdBois', bdBoi)
-
-// const newuser = new bdModel({
-//     name: "Saqiib M",
-//     birthDate: "06/05/2022",
-//     phoneNumber: "+919071156280",
-//     group: "pullingo"
-// });
-
-// newuser.save((err) => {
-//     if (err) {
-//         console.log(err);
-//     }
-// });
+module.exports = connectDB;
