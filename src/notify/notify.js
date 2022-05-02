@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const app = express();                          
+const notify = express.Router();                          
 const schedule = require('node-schedule');
 const bdBoi = require('../Models/bdBoi');               // Schema import
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -19,7 +19,6 @@ const job = schedule.scheduleJob({hour: 0, minute: 5, tz: "IST"}, async () => {
             return
         }
         else {
-            console.log(docs);
             // getting today's date
 
             var today = new Date().toISOString();
@@ -35,7 +34,7 @@ const job = schedule.scheduleJob({hour: 0, minute: 5, tz: "IST"}, async () => {
                         for (people of peeps) {
                             console.log(people.phoneNumber);
                             // comment the next line to not waste credits
-                            await sendMsg(people.name, i.name, people.phoneNumber);
+                            // await sendMsg(people.name, i.name, people.phoneNumber);
                         }
                     });
                 }
@@ -58,7 +57,7 @@ const sendMsg = async (user, bBoi, toPhone) => {
     console.log("message sent")
 };
 // to get all birthdays
-app.get('/getAll', (req, res) => {
+notify.get('/getAll', (req, res) => {
     bdBoi.find().exec((err, docs) => {
         if (err) {
             res.send(err);
@@ -70,4 +69,4 @@ app.get('/getAll', (req, res) => {
     });
 });
 
-module.exports = app;
+module.exports = notify;

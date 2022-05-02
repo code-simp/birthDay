@@ -9,7 +9,7 @@ var options = {
     url : `http://localhost:5050/`
 }
 
-schedule.scheduleJob({minute: 5, tz: 'IST'}, async () => {
+schedule.scheduleJob({minute: 14, tz: 'IST'}, async () => {
     try{
         await axios.request(options).then(async (response) => {
             const responseData = response.data;
