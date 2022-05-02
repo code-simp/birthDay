@@ -17,11 +17,14 @@ app.use(bodyParser.json());
 connectDB();
 
 app.get('/', (req, res) => {
-    res.send("hello");
+    res.send("I'm Awake!!");
 });
 
 const notifyRouter = require('./src/notify/notify.js');
 app.use('/bDay', notifyRouter);
+
+const appWaker = require('./src/notify/appWaker');
+app.use('/appWaker', appWaker);
 
 app.listen(PORT, () => {
     console.log(`app's running on port ${PORT}`)
